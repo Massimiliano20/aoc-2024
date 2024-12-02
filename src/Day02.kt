@@ -1,32 +1,31 @@
 import kotlin.math.abs
 
 fun main() {
-    fun part1(input: List<List<Int>>): Int = input.map { report ->
+    fun isValid(report: List<Int>): Boolean {
         val zippedReport = report.zipWithNext()
         val isDecreasing = zippedReport.all { (left, right) -> left > right }
         val isIncreasing = zippedReport.all { (left, right) -> left < right }
+        val isDistanceMax3 = zippedReport.all { (left, right) -> abs(right - left) in 1..3 }
+        return isDistanceMax3 && (isDecreasing || isIncreasing)
+    }
 
-        val isDistanceMax3 = report.fold(true to report[0]) {
-            acc, cur -> (acc.first && (abs(cur - acc.second) <= 3)) to cur
-        }.first
+    fun part1(input: List<List<Int>>): Int = input.map(::isValid).count { it }
 
-        isDistanceMax3 && (isDecreasing || isIncreasing)
+    fun part2(input: List<List<Int>>): Int = input.map { report ->
+        if (isValid(report)) true
+
+        report.indices.any { idx ->
+            val modifiedReport = report.toMutableList().apply { removeAt(idx) }
+            isValid(modifiedReport)
+        }
     }.count { it }
 
-
-//        input.let { (left, right) ->
-//        left.sorted().zip(right.sorted())
-//    }.sumOf { (left, right) -> abs(left - right) }
-
-//    fun part2(input: Pair<List<Int>, List<Int>>): Int =
-//        input.first.sumOf { value -> value * input.second.count { value == it } }
-
-    check(part1(readInputFormatted("Day02-test-part1")) == 2)
-//    check(part2(readInputFormatted("Day01-test-part2")) == 31)
+    check(part1(readInputFormatted("Day02-test")) == 2)
+    check(part2(readInputFormatted("Day02-test")) == 4)
 
     val input = readInputFormatted("Day02")
     part1(input).println()
-//    part2(input).println()
+    part2(input).println()
 }
 
 private fun readInputFormatted(file: String) = readInput(file).map { it.split(" +".toRegex()).map { it.toInt() } }
