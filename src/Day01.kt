@@ -16,6 +16,6 @@ fun main() {
     part2(input).println()
 }
 
-fun readInputFormatted(file: String) = readInput(file).map { it.split(" +".toRegex()) }
+private fun readInputFormatted(file: String) = readInput(file).map { it.split(" +".toRegex()) }
     .map { parts -> parts.map { it.toInt() }.getOrElse(0) { 0 } to parts.map { it.toInt() }.getOrElse(1) { 0 } }
     .unzip()
